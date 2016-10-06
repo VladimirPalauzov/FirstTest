@@ -1,0 +1,11 @@
+{
+  "name": "workshop",
+  "version": "1.0.0",
+  "description": "Exam preparation",
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Vladimir Palauzov",
+  "license": "MIT"
+}

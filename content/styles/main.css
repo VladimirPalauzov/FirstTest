@@ -1,0 +1,10 @@
+a {
+    display: inline-block;
+    text-decoration: none;
+    background-color: pink;
+    padding: 10px;        
+}
+
+header h1 {
+    background-color: green;
+}
