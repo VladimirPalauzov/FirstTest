@@ -1,16 +1,37 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><link rel="stylesheet" href="/content/styles/list.css"><title>TO DO List</title></head><body><ul>
-        <li><div>
-            <strong>Id: 235</strong><br>
-            <p><strong>Title:</strong>Task definition</p>
-            <p><strong>Status:</strong>Pending</p>
-            <strong>Decription:</strong><textarea readonly>cvjbnjkdfbndbndbndbd\nsdvhkbsdsdbvbsdv\nsdgsdgsgsgsgsdggsgsgsg</textarea><br>
-            <button>Details</button>
-        </div></li>
-        <li><div>
-            <strong>Id: 1445</strong><br>
-            <p><strong>Title:</strong>Another Task definition</p>
-            <p><strong>Status:</strong>Fulfilled</p>
-            <strong>Decription:</strong><textarea readonly>cvjxcvxcvxbd\nsdvhkbsdsdbvbsdv\nsdgsdgsgsgsgsdggsgsgsg</textarea><br>
-            <button>Details</button>
-        </div></li>
-    </ul></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/content/styles/details.css">
+    <title>Details</title>
+</head>
+<body>
+    <p>Id: <strong>103</strong></p>
+    <p>From: <strong>07/10/2015 09:24:08</strong></p>
+    <p>Status: <button>Pending</button></p>
+    <p>Description: <strong><textarea readonly rows="3">Some description</textarea></strong></p>
+    <form action="/details/103/comment"  method="POST"  enctype="multipart/form-data">
+        <p>
+            <label for="comment">Comment:</label>
+            <textarea name="comment" rows="3"></textarea><br>
+            <input type="submit" value="Add Comment">
+        </p>
+    </form>
+    <div>
+            <button onclick="history.go(-1)">Back</button>
+    </div>
+    <hr>
+    <div>
+        <span><i>09/17/2015 11:05:10</i></span>
+        <p>jdfbndfib dfb odif b;oid bfh;odifbjn;doifh ba;oibha[b[ad'bifbodbfdojhirhe] eri]gerge rgehrg0bpe</p>
+    </div>
+    <div>
+        <span><i>09/17/2015 11:05:10</i></span>
+        <p>jdfbndfib dfb odif b;oid bfh;odifbjn;doifh ba;oibha[b[ad'bifbodbfdojhirhe] eri]gerge rgehrg0bpe</p>
+    </div>
+    <div>
+        <span><i>09/17/2015 11:05:10</i></span>
+        <p>jdfbndfib dfb odif b;oid bfh;odifbjn;doifh ba;oibha[b[ad'bifbodbfdojhirhe] eri]gerge rgehrg0bpe</p>
+    </div>
+</body>
+</html>

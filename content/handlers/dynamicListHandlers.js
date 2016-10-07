@@ -1,18 +1,15 @@
 
 const db = require('../../db')
 
-const prefix = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><link rel="stylesheet" href="/content/styles/list.css"><title>TO DO List</title></head><body><ul>'
-const suffix = '</ul><br><button onclick="history.go(-1)">Back</button></body></html>'
-
 function dynlistHandler (path, res) {
   let list = db.sortDb()
-  let pref = prefix
+  let pref = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><link rel="stylesheet" href="/content/styles/list.css"><title>TO DO List</title></head><body><ul>'
   for (let i = 0; i < list.length; i++) {
     let state = list[i].state ? 'Fulfilled' : 'Pending'
     let item = `<li><div><p><strong>Title:</strong>${list[i].title}</p><p><strong>Status:</strong>${state}</p><strong>Decription:</strong><textarea readonly>${list[i].description}</textarea><br><a href="/details/${list[i].id}">Details</a></div></li>`
     pref += item
   }
-  pref += suffix
+  pref += `</ul><br><button onclick='window.location.href="/"'>Back</button></body></html>`
   res.writeHead(200, {
     'content-type': 'text/html'
   })
@@ -20,11 +17,51 @@ function dynlistHandler (path, res) {
 }
 
 function dynDetails (path, res) {
-
+  let id = Number(path.split('/').pop())
+  let task = db.findEntry(id)
+  if (task) {
+    res.writeHead(200, {
+      'content-type': 'text/html',
+      'Cache-Control': 'no-cache'
+    })
+    res.end(generateDetailsBody(task))
+  } else { // not found
+    res.writeHead(303, {
+      'location': '/content/error404.html'
+    })
+    res.end()
+  }
 }
 
 function dynChangeState (path, res) {
+  let id = Number(path.split('/').pop())
+  let task = db.findEntry(id)
+  if (task) {
+    task.state = !task.state
+    res.writeHead(303, {
+      'location': `/details/${id}`
+    })
+    res.end()
+  } else { // not found
+    res.writeHead(303, {
+      'location': '/content/error404.html'
+    })
+    res.end()
+  }
+}
 
+function generateDetailsBody (task) {
+  let body = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><link rel="stylesheet" href="/content/styles/details.css"><title>Details</title></head><body>'
+  // generate body
+  body += `<p>Id: <strong>${task.id}</strong></p><p>From: <strong>${task.date}</strong></p><p>Status: <button onclick='window.location.href="${'/details/changestate/' + task.id}"'>${task.state ? 'Fulfilled' : 'Pending'}</button></p>`
+  body += `<p>Description: <strong><textarea readonly rows="3">${task.description}</textarea></strong></p>`
+  body += `<form action="/details/${task.id}/comment"  method="POST"  enctype="multipart/form-data"><p><label for="comment">Comment:</label><textarea name="comment" rows="3"></textarea><br><input type="submit"value="AddComment"></p></form><button onclick="window.location.href='/all'">Back</button><hr>`
+  for (let i = task.comments.length - 1; i >= 0; i--) {
+    body += `<div><span><i>${task.comments[i].date}</i></span><p>${task.comments[i].text}</p></div>`
+  }
+  // complete and send html
+  body += '</body></html>'
+  return body
 }
 
 module.exports = {getListHandler: dynlistHandler, getDetailsHandler: dynDetails, getChangeStateHandler: dynChangeState}

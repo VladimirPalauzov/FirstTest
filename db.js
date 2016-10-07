@@ -2,10 +2,11 @@ let entryDB = []
 
 // entry object contructor
 function DbEntry (id, date) {
-  this.id = id
-  this.date = date
-  this.comment = ''
-  this.state = false
+  this.id = id  // unique id
+  this.date = date // creation date
+  this.description = '' // general description
+  this.comments = []  // each comment is an object with date and text
+  this.state = false  // false = pending, true = fulfilled
 }
 
 function getNextEntryId () {
@@ -16,7 +17,7 @@ function getNextEntryId () {
 }
 
 function addNewEntry (title, description, state) {
-  let entry = new DbEntry(getNextEntryId(), new Date().toString())
+  let entry = new DbEntry(getNextEntryId(), new Date().toLocaleString())
   entry.title = title
   entry.description = description
   entry.state = state || false
@@ -24,17 +25,10 @@ function addNewEntry (title, description, state) {
   return entry.id
 }
 
-function updateEntryById (id, comment, state) {
+function addEntryComment (id, comment) {
   let entry = getEntryById(id)
-  if (entry === undefined) {
-    return false
-  } else {
-    if (comment) {
-      entry.comment = comment
-    }
-    if (state !== undefined) {
-      entry.state = state
-    }
+  if (entry) {
+    entry.comments.unshift({date: new Date().toLocaleString(), text: comment})
   }
 }
 
@@ -55,5 +49,5 @@ function sort () {
   })
 }
 
-module.exports = {addNew: addNewEntry, findEntry: getEntryById, updateEntry: updateEntryById, sortDb: sort, dump: dump}
+module.exports = {addNew: addNewEntry, findEntry: getEntryById, sortDb: sort, addComment: addEntryComment, dump: dump}
 

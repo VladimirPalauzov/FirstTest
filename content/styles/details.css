@@ -1,0 +1,10 @@
+body {
+    text-align: center;
+}
+
+
+div p {
+    width: 300px;
+    vertical-align: top;
+    display: inline-block;
+}

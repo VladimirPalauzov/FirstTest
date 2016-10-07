@@ -26,9 +26,21 @@ function postCreateEntry (path, res, parts) {
   }
 }
 
-// accepts data for comment and image
-function postDetails (path, res, parts) {
-  console.log(parts)
+
+// adds new comment to existing entry
+function dynAddComment (path, res, parts) {
+  let ar = path.split('/')
+  ar.pop()
+  let id = Number(ar.pop())
+  for (let part of parts) {
+    if (part.name === 'comment' && part.data !== '') {
+      db.addComment(id, part.data)
+    }
+  }
+  res.writeHead(303, {
+    'location': `/details/${id}`
+  })
+  res.end()
 }
 
-module.exports = { createEntry: postCreateEntry, addDetails: postDetails }
+module.exports = { createEntry: postCreateEntry, getAddCommentHandler: dynAddComment }
