@@ -55,6 +55,9 @@ function generateDetailsBody (task) {
   // generate body
   body += `<p>Id: <strong>${task.id}</strong></p><p>From: <strong>${task.date}</strong></p><p>Status: <button onclick='window.location.href="${'/details/changestate/' + task.id}"'>${task.state ? 'Fulfilled' : 'Pending'}</button></p>`
   body += `<p>Description: <strong><textarea readonly rows="3">${task.description}</textarea></strong></p>`
+  if (task.imgFile) {
+    body += `<img src = '/imageSrc/${task.id}' >`
+  }
   body += `<form action="/details/${task.id}/comment"  method="POST"  enctype="multipart/form-data"><p><label for="comment">Comment:</label><textarea name="comment" rows="3"></textarea><br><input type="submit"value="AddComment"></p></form><button onclick="window.location.href='/all'">Back</button><hr>`
   for (let i = task.comments.length - 1; i >= 0; i--) {
     body += `<div><span><i>${task.comments[i].date}</i></span><p>${task.comments[i].text}</p></div>`
@@ -64,5 +67,25 @@ function generateDetailsBody (task) {
   return body
 }
 
-module.exports = {getListHandler: dynlistHandler, getDetailsHandler: dynDetails, getChangeStateHandler: dynChangeState}
+function getStatistics (path, res, headers) {
+  if ((headers['my-authorization'] && headers['my-authorization'] === 'Admin') || 
+    (headers['My-Authorization'] && headers['My-Authorization'] === 'Admin')) {
+    let body = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Error</title></head><body>'
+    let stat = db.getStat()
+    body += `<p>Number of items: ${stat.entries}</p>`
+    body += `<p>Number of comments: ${stat.comments}</p>`
+    body += `<button onclick='window.location.href="/"'>Back</button></body></html>`
+    res.writeHead(200, {
+      'content-type': 'text/html'
+    })
+    res.end(body)
+  } else {
+    res.writeHead(403, {
+      'content-type': 'text/plain'
+    })
+    res.end('Forbidden')
+  }
+}
+
+module.exports = {getListHandler: dynlistHandler, getDetailsHandler: dynDetails, getChangeStateHandler: dynChangeState, getStatisticsHandler: getStatistics}
 

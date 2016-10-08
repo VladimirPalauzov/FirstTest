@@ -49,5 +49,18 @@ function sort () {
   })
 }
 
-module.exports = {addNew: addNewEntry, findEntry: getEntryById, sortDb: sort, addComment: addEntryComment, dump: dump}
+function getStatistics () {
+  let numEntries = 0
+  let numComments = 0
+  entryDB.forEach(val => {
+    numEntries++
+    numComments += val.comments.length
+  })
+  return {
+    entries: numEntries,
+    comments: numComments
+  }
+}
+
+module.exports = {addNew: addNewEntry, findEntry: getEntryById, sortDb: sort, addComment: addEntryComment, getStat: getStatistics, dump: dump}
 

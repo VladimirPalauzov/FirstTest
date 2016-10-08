@@ -8,6 +8,7 @@ const htmlHandlers = require('./content/handlers/htmlFileHandler')
 const cssHandlers = require('./content/handlers/cssFileHandler')
 const postHandlers = require('./content/handlers/postRequestHandlers')
 const listHandlers = require('./content/handlers/dynamicListHandlers')
+const imageHandlers = require('./content/handlers/imageFileHandlers')
 
 // misc.
 let port = process.env.PORT || 8877
@@ -18,13 +19,15 @@ let handlerPostDescriptors = [
 ]
 
 let handlerGetDescriptors = [
-    {key: '/', type: 'str', target: './content/index.html', handler: htmlHandlers.htmlFileHandler},
-    {key: /^\/content\/[a-zA-Z0-9_]+\.html$/i, type: 'rgx', target: '=', handler: htmlHandlers.htmlFileHandler},
-    {key: /^\/content\/styles\/[a-zA-Z0-9_]+\.css$/i, type: 'rgx', target: '=', handler: cssHandlers.cssFileHandler},
-    {key: '/create', type: 'str', target: './content/newentry.html', handler: htmlHandlers.htmlFileHandler},
-    {key: '/all', type: 'str', target: '', handler: listHandlers.getListHandler},
-    {key: /^\/details\/\d+$/i, type: 'rgx', target: '=', handler: listHandlers.getDetailsHandler},
-    {key: /^\/details\/changestate\/\d+$/i, type: 'rgx', target: '=', handler: listHandlers.getChangeStateHandler},
+    {key: '/', type: 'str', target: './content/index.html', handler: htmlHandlers.htmlFileHandler, requireHeaders: false},
+    {key: /^\/content\/[a-zA-Z0-9_]+\.html$/i, type: 'rgx', target: '=', handler: htmlHandlers.htmlFileHandler, requireHeaders: false},
+    {key: /^\/content\/styles\/[a-zA-Z0-9_]+\.css$/i, type: 'rgx', target: '=', handler: cssHandlers.cssFileHandler, requireHeaders: false},
+    {key: '/create', type: 'str', target: './content/newentry.html', handler: htmlHandlers.htmlFileHandler, requireHeaders: false},
+    {key: '/all', type: 'str', target: '', handler: listHandlers.getListHandler, requireHeaders: false},
+    {key: '/stats', type: 'str', target: '', handler: listHandlers.getStatisticsHandler, requireHeaders: true},
+    {key: /^\/details\/\d+$/i, type: 'rgx', target: '=', handler: listHandlers.getDetailsHandler, requireHeaders: false},
+    {key: /^\/details\/changestate\/\d+$/i, type: 'rgx', target: '=', handler: listHandlers.getChangeStateHandler, requireHeaders: false},
+    {key: /^\/imageSrc\/\d+$/i, type: 'rgx', target: '=', handler: imageHandlers.imageFileHandler, requireHeaders: false},
     /*  {key: '/all', type: 'str', target: '', handler: listHtmlHandler},
     {key: /^\/details\/\d+$/i, type: 'rgx', target: './content/list.html', handler: htmlHandlers.htmlFileHandler},
     {key: '/stat', type: 'str', target: './stat.html', handler: htmlFileHandler},
@@ -51,7 +54,7 @@ function executeGetHnadler (req, res) {
       return parsedUrl.pathname.search(dr.key) > -1
     }
   }) || handlerGetDescriptors[errorDescriptorIndex]
-  descriptor.handler((descriptor.target === '=') ? '.' + parsedUrl.pathname : descriptor.target, res)
+  descriptor.handler((descriptor.target === '=') ? '.' + parsedUrl.pathname : descriptor.target, res, descriptor.requireHeaders ? req.headers : null)
 }
 
 function executePostHandler (req, res) {
